@@ -1,11 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+
 <body>
-    
+
+    <div class="wrapper">
+        <ul class="todo-lists-container">
+        </ul>
+        <ul class="todos-container">
+        </ul>
+
+        <button class="add-todo-list-button">Add Todo List</button>
+        <button class="add-todo-button">Add Todo</button>
+    </div>
+
+    <dialog class="new-todo-form-dialog">
+        <form action="" method="dialog" class="new-todo-form">
+            <label for="new-todo-name">Name: <input type="text" id="new-todo-name" name="newTodoName"></label>
+            <label for="new-todo-description">Description: <input type="text" id="new-todo-description"
+                    name="newTodoDescription"></label>
+            <label for="new-todo-due-date">Due Date: <input type="date" id="new-todo-due-date"
+                    name="newTodoDueDate"></label>
+            <fieldset>
+                <legend>Priority</legend>
+                <label for="low-priority"><input type="radio" id="low-priority" value="low"
+                        name="newTodoPriority">Low</label>
+                <label for="standard-priority"><input type="radio" id="standard-priority" value="standard"
+                        name="newTodoPriority" checked>Standard</label>
+                <label for="high-priority"><input type="radio" id="high-priority" value="high"
+                        name="newTodoPriority">High</label>
+            </fieldset>
+            <select name="todo-list-to-add-todo-to"></select>
+            <button>Add</button>
+        </form>
+    </dialog>
+
+    <dialog class="new-todo-list-form-dialog">
+        <form action="" method="dialog" class="new-todo-list-form">
+            <label for="new-todo-list-name">Name: <input type="text" id="new-todo-list-name"
+                    name="newTodoListName"></label>
+            <button>Add</button>
+        </form>
+    </dialog>
+
 </body>
+
 </html>
