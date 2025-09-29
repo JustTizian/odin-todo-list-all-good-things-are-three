@@ -20,6 +20,8 @@ const newTodoListForm = $(".new-todo-list-form")
 const editTodoFormDialog = $(".edit-todo-form-dialog")
 const editTodoForm = $(".edit-todo-form")
 
+todoListsContainer.dataset.name = "All"
+
 
 addTodoListButton.addEventListener("click", () => {
     newTodoListFormDialog.showModal()
@@ -77,6 +79,7 @@ function renderTodoLists(filterTypes, todoLists) {
         const listEl = document.createElement("li")
         listEl.dataset.id = filterType
         listEl.dataset.viewType = "filter"
+        listEl.dataset.name = filterType.charAt(0).toUpperCase() + filterType.slice(1)
         listEl.classList.add("todo-list")
 
         const listNameDisplay = document.createElement("button")
@@ -91,6 +94,7 @@ function renderTodoLists(filterTypes, todoLists) {
         const listEl = document.createElement("li")
         listEl.dataset.id = list.id
         listEl.dataset.viewType = "list"
+        listEl.dataset.name = list.name
         listEl.classList.add("todo-list")
 
         const listNameDisplay = document.createElement("button")
@@ -100,7 +104,6 @@ function renderTodoLists(filterTypes, todoLists) {
 
         if (index != 0) {
             const listDeleteButton = document.createElement("button")
-            listDeleteButton.textContent = "Delete"
             listDeleteButton.classList.add("delete-list-button")
             listEl.append(listDeleteButton)
         }
@@ -114,32 +117,34 @@ todoListsContainer.addEventListener("click", (event) => {
     if (!event.target.closest(".todo-list")) return;
 
     const todoEl = event.target.closest(".todo-list")
-    console.log(event.target)
 
     if (event.target.matches(".delete-list-button")) {
-        console.log(event.target)
-        console.log("triggered")
         script.deleteTodoList(todoEl.dataset.id)
         return;
     }
 
     if (event.target.matches(".choose-todo-list")) {
+        todoListsContainer.dataset.name = todoEl.dataset.name
         if (todoEl.dataset.viewType === "list") {
             script.changeActiveTodoList(todoEl.dataset.id)
             script.changeToListView(todoEl.dataset.id)
+            
         }
 
         if (todoEl.dataset.viewType === "filter") {
             script.changeToFilterView(todoEl.dataset.id)
         }
+
+        
     }
 
 })
 
 function renderTodoList(todoList) {
     todosContainer.replaceChildren()
+
     const todoListTitle = document.createElement("h1")
-    todoListTitle.textContent = todoListsContainer.dataset.filterType
+    todoListTitle.textContent = todoListsContainer.dataset.name
     todosContainer.append(todoListTitle)
     
     todoList.forEach(todo => {

@@ -3,7 +3,6 @@ import TodoList from './TodoList'
 import Todo from './Todo'
 
 import UIManager from './UIManager'
-import { isValid } from 'date-fns'
 
 let todoLists = loadTodoLists() || [new TodoList("Standard", true), new TodoList("Custom Todo List")]
 
