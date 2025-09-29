@@ -87,16 +87,50 @@ function getTodoLists() {
     return todoLists
 }
 
+function getTodoData(id){
+    const wantedTodo = todos.find(todo => todo.id === id)
+    
+    const name = wantedTodo.name
+    const description = wantedTodo.description
+    const dueDate = wantedTodo.dueDate
+    const priority = wantedTodo.priority
+
+    return {name, description, dueDate, priority}
+}
+
+function editTodo(todoId, newData){
+    const todo = todos.find(todo => todo.id === todoId)
+    
+    if(todo.name !== newData.name){
+        todo.name = newData.name
+    }
+
+    if(todo.description !== newData.description){
+        todo.description = newData.description
+    }
+
+    if(todo.dueDate !== newData.dueDate){
+        todo.dueDate = newData.dueDate
+    }
+    
+    if(todo.priority !== newData.priority){
+        todo.priority = newData.priority
+    }
+    console.log(todo)
+    render()
+}
+
 export default {
     addTodo,
-    addTodoList,
+    editTodo,
     deleteTodo,
+    addTodoList,
+    deleteTodoList,
     getTodoLists,
     changeToListView,
     changeToFilterView,
     changeActiveTodoList,
-    deleteTodoList
-    
+    getTodoData
 }
 
 

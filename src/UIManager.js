@@ -17,6 +17,10 @@ const addTodoListButton = $(".add-todo-list-button")
 const newTodoListFormDialog = $(".new-todo-list-form-dialog")
 const newTodoListForm = $(".new-todo-list-form")
 
+const editTodoFormDialog = $(".edit-todo-form-dialog")
+const editTodoForm = $(".edit-todo-form")
+
+
 addTodoListButton.addEventListener("click", () => {
     newTodoListFormDialog.showModal()
 })
@@ -142,7 +146,11 @@ function renderTodoList(todoList) {
         todoDeleteButton.textContent = "Delete"
         todoDeleteButton.classList.add("delete-todo-button")
 
-        todoEl.append(todoNameDisplay, todoDeleteButton)
+        const todoEditButton = document.createElement("button")
+        todoEditButton.textContent = "Edit"
+        todoEditButton.classList.add("edit-todo-button")
+
+        todoEl.append(todoNameDisplay, todoEditButton, todoDeleteButton)
         todosContainer.append(todoEl)
     })
 }
@@ -154,6 +162,34 @@ todosContainer.addEventListener("click", (event) => {
     if (event.target.matches(".delete-todo-button")) {
         script.deleteTodo(todoId)
     }
+    if(event.target.matches(".edit-todo-button")){
+        openEditDialog(todoId)
+    }
+})
+
+function openEditDialog(todoId){
+    editTodoForm.dataset.todoId = todoId
+    
+    const todoData = script.getTodoData(todoId)
+    editTodoForm.querySelector("#edit-todo-name").value = todoData.name
+    editTodoForm.querySelector("#edit-todo-description").value = todoData.description
+    editTodoForm.querySelector("#edit-todo-due-date").value = todoData.dueDate
+    editTodoForm.querySelectorAll(".edit-todo-priority").forEach(radio => {
+        if(radio.value === todoData.priority) radio.checked = true
+    })
+
+    editTodoFormDialog.showModal()
+}
+
+editTodoForm.addEventListener("submit", (event) => {
+    const newTodoData = event.target.elements
+    
+    const name = newTodoData["editTodoName"].value
+    const description = newTodoData["editTodoDescription"].value
+    const dueDate = newTodoData["editTodoDueDate"].value
+    const priority = newTodoData["editTodoPriority"].value
+
+    script.editTodo(editTodoForm.dataset.todoId, {name, description, dueDate, priority})
 })
 
 export default {

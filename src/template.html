@@ -40,6 +40,26 @@
         </form>
     </dialog>
 
+    <dialog class="edit-todo-form-dialog">
+        <form action="" method="dialog" class="edit-todo-form">
+            <label for="edit-todo-name">Name: <input type="text" id="edit-todo-name" name="editTodoName"></label>
+            <label for="edit-todo-description">Description: <input type="text" id="edit-todo-description"
+                    name="editTodoDescription"></label>
+            <label for="edit-todo-due-date">Due Date: <input type="date" id="edit-todo-due-date"
+                    name="editTodoDueDate"></label>
+            <fieldset>
+                <legend>Priority</legend>
+                <label for="low-priority"><input type="radio" id="low-priority" value="low" name="editTodoPriority"
+                        class="edit-todo-priority">Low</label>
+                <label for="standard-priority"><input type="radio" id="standard-priority" value="standard"
+                        name="editTodoPriority" class="edit-todo-priority">Standard</label>
+                <label for="high-priority"><input type="radio" id="high-priority" value="high" name="editTodoPriority"
+                        class="edit-todo-priority">High</label>
+            </fieldset>
+            <button>Edit</button>
+        </form>
+    </dialog>
+
     <dialog class="new-todo-list-form-dialog">
         <form action="" method="dialog" class="new-todo-list-form">
             <label for="new-todo-list-name">Name: <input type="text" id="new-todo-list-name"
