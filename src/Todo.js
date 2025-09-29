@@ -36,7 +36,7 @@ export default class Todo {
     isDueThisWeek(){
         if(!this.dueDate) return
         const date = new Date()
-        return isThisWeek(new Date(this.dueDate.getFullYear(), this.dueDate.getMonth(), this.dueDate.getDate())) 
+        return isThisWeek(new Date(this.dueDate.getFullYear(), this.dueDate.getMonth(), this.dueDate.getDate()), { weekStartsOn: 1 }) 
         && isAfter(new Date(this.dueDate.getFullYear(), this.dueDate.getMonth(), this.dueDate.getDate()), new Date(date.getFullYear(), date.getMonth(), date.getDate())) 
         || this.isDueToday()
     }
@@ -49,6 +49,11 @@ export default class Todo {
     }
 
     getFormattedDate(){
-        return format(this.dueDate, "dd/MM/yyyy")
+        return this.dueDate ? format(this.dueDate, "dd/MM/yyyy") : null
+    }
+
+    getRawDate(){
+        if(!this.dueDate) return
+        return `${this.dueDate.getFullYear()}-${(this.dueDate.getMonth() + 1).toString().padStart(2, "0")}-${this.dueDate.getDate().toString().padStart(2, "0")}`
     }
 }

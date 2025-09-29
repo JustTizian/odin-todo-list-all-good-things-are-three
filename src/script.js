@@ -8,7 +8,7 @@ let todoLists = loadTodoLists() || [new TodoList("Standard", true), new TodoList
 
 let todos = loadTodos() ||
     [
-        new Todo(todoLists[0].id, "Example Todo1", "This is the description", "09-29-2025", "low", undefined, false, true),
+        new Todo(todoLists[0].id, "Example Todo1", "This is the description", "2025-09-29", "low", undefined, false, true),
     ]
 
 function loadTodos() {
@@ -119,7 +119,7 @@ function getTodoData(id) {
 
     const name = wantedTodo.name
     const description = wantedTodo.description
-    const dueDate = wantedTodo.dueDate
+    const dueDate = wantedTodo.getRawDate()
     const priority = wantedTodo.priority
 
     return { name, description, dueDate, priority }
@@ -137,7 +137,6 @@ function editTodo(todoId, newData) {
     }
 
     if (todo.dueDate !== newData.dueDate) {
-        console.log(newData)
         todo.dueDate = newData.dueDate
     }
 

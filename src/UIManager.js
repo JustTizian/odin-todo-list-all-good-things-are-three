@@ -175,6 +175,12 @@ function renderTodoList(todoList) {
         const todoDeleteButton = document.createElement("button")
         todoDeleteButton.classList.add("delete-todo-button")
 
+        switch(todo.priority){
+            case "low": todoEl.classList.add("low"); break;
+            case "standard": todoEl.classList.add("standard"); break;
+            case "high": todoEl.classList.add("high"); break;
+        }
+
         todoControls.append(
             todoExpandButton,
             todoEditButton,
@@ -226,6 +232,7 @@ function openEditDialog(todoId) {
     editTodoForm.querySelector("#edit-todo-name").value = todoData.name
     editTodoForm.querySelector("#edit-todo-description").value = todoData.description
     editTodoForm.querySelector("#edit-todo-due-date").value = todoData.dueDate
+    console.log(todoData.dueDate)
     editTodoForm.querySelectorAll(".edit-todo-priority").forEach(radio => {
         if (radio.value === todoData.priority) radio.checked = true
     })
