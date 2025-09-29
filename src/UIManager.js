@@ -59,6 +59,11 @@ newTodoForm.addEventListener("submit", (event) => {
     const newTodoListId = newTodoData["todo-list-to-add-todo-to"].value
 
     script.addTodo(newTodoListId, newTodoName, newTodoDescription, newTodoDueDate, newTodoPriority)
+
+    newTodoData["newTodoName"].value = ""
+    newTodoData["newTodoDescription"].value = ""
+    newTodoData["newTodoDueDate"].value = ""
+    newTodoData["newTodoPriority"].value = ""
 })
 
 newTodoFormDialog.addEventListener("close", () => {
@@ -133,24 +138,63 @@ todoListsContainer.addEventListener("click", (event) => {
 
 function renderTodoList(todoList) {
     todosContainer.replaceChildren()
-
+    const todoListTitle = document.createElement("h1")
+    todoListTitle.textContent = todoListsContainer.dataset.filterType
+    todosContainer.append(todoListTitle)
+    
     todoList.forEach(todo => {
         const todoEl = document.createElement("li")
         todoEl.dataset.id = todo.id
         todoEl.classList.add("todo")
 
+        const todoFirstRow = document.createElement("div")
+        todoFirstRow.classList.add("todo-first-row")
+
         const todoNameDisplay = document.createElement("p")
         todoNameDisplay.textContent = todo.name
+        todoNameDisplay.classList.add("todo-name-display")
 
-        const todoDeleteButton = document.createElement("button")
-        todoDeleteButton.textContent = "Delete"
-        todoDeleteButton.classList.add("delete-todo-button")
+
+        const todoDueDateDisplay = document.createElement("p")
+        todoDueDateDisplay.textContent = todo.getFormattedDate()
+
+        const todoControls = document.createElement("div")
+        todoControls.classList.add("todo-controls-container")
+
+        const todoExpandButton = document.createElement("button")
+        todoExpandButton.classList.add("expand-todo-button")
 
         const todoEditButton = document.createElement("button")
-        todoEditButton.textContent = "Edit"
         todoEditButton.classList.add("edit-todo-button")
 
-        todoEl.append(todoNameDisplay, todoEditButton, todoDeleteButton)
+        const todoDeleteButton = document.createElement("button")
+        todoDeleteButton.classList.add("delete-todo-button")
+
+        todoControls.append(
+            todoExpandButton,
+            todoEditButton,
+            todoDeleteButton
+        )
+
+        todoFirstRow.append(
+            todoNameDisplay,
+            todoDueDateDisplay,
+            todoControls
+        )
+
+        const todoDescriptionDisplay = document.createElement("p")
+        todoDescriptionDisplay.textContent = todo.description
+
+        if (!todo.expanded) {
+            todoDescriptionDisplay.style.display = "none"
+        }
+
+        todoEl.append(
+            todoFirstRow,
+            todoDescriptionDisplay
+
+        )
+
         todosContainer.append(todoEl)
     })
 }
@@ -162,20 +206,23 @@ todosContainer.addEventListener("click", (event) => {
     if (event.target.matches(".delete-todo-button")) {
         script.deleteTodo(todoId)
     }
-    if(event.target.matches(".edit-todo-button")){
+    if (event.target.matches(".edit-todo-button")) {
         openEditDialog(todoId)
+    }
+    if (event.target.matches(".expand-todo-button")) {
+        script.expandTodo(todoId)
     }
 })
 
-function openEditDialog(todoId){
+function openEditDialog(todoId) {
     editTodoForm.dataset.todoId = todoId
-    
+
     const todoData = script.getTodoData(todoId)
     editTodoForm.querySelector("#edit-todo-name").value = todoData.name
     editTodoForm.querySelector("#edit-todo-description").value = todoData.description
     editTodoForm.querySelector("#edit-todo-due-date").value = todoData.dueDate
     editTodoForm.querySelectorAll(".edit-todo-priority").forEach(radio => {
-        if(radio.value === todoData.priority) radio.checked = true
+        if (radio.value === todoData.priority) radio.checked = true
     })
 
     editTodoFormDialog.showModal()
@@ -183,13 +230,13 @@ function openEditDialog(todoId){
 
 editTodoForm.addEventListener("submit", (event) => {
     const newTodoData = event.target.elements
-    
+
     const name = newTodoData["editTodoName"].value
     const description = newTodoData["editTodoDescription"].value
     const dueDate = newTodoData["editTodoDueDate"].value
     const priority = newTodoData["editTodoPriority"].value
 
-    script.editTodo(editTodoForm.dataset.todoId, {name, description, dueDate, priority})
+    script.editTodo(editTodoForm.dataset.todoId, { name, description, dueDate, priority })
 })
 
 export default {

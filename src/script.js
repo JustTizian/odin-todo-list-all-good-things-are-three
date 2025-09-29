@@ -3,57 +3,85 @@ import TodoList from './TodoList'
 import Todo from './Todo'
 
 import UIManager from './UIManager'
+import { isValid } from 'date-fns'
 
-let todoLists = [new TodoList("Standard", true), new TodoList("Test")]
+let todoLists = loadTodoLists() || [new TodoList("Standard", true), new TodoList("Custom Todo List")]
 
-let todos = [
-    new Todo(todoLists[0].id, "Example Todo1", "This is the description", "01-01-1970", "low", undefined, true),
-    new Todo(todoLists[0].id, "Example Todo2", "This is the description", "01-01-1970", "low"),
-    new Todo(todoLists[0].id, "Example Todo3", "This is the description", "01-01-1970", "low"),
-    new Todo(todoLists[1].id, "Example Todo4", "This is the description", "01-01-1970", "low", undefined, true),
-    new Todo(todoLists[1].id, "Example Todo5", "This is the description", "01-01-1970", "low"),
-    new Todo(todoLists[1].id, "Example Todo6", "This is the description", "01-01-1970", "low")
+let todos = loadTodos() ||
+    [
+        new Todo(todoLists[0].id, "Example Todo1", "This is the description", "09-29-2025", "low", undefined, false, true),
+    ]
 
-]
+function loadTodos() {
+    if (!localStorage.getItem("todos")) return
+
+    const data = (JSON.parse(localStorage.getItem("todos")))
+    const todos = data.map(todo => {
+        return new Todo(todo.listId, todo.name, todo.description, todo.dueDate, todo.priority, todo.id, todo.done, todo.expanded)
+    })
+
+    return todos
+}
+
+function loadTodoLists() {
+    if (!localStorage.getItem("todosLists")) return
+
+    const data = (JSON.parse(localStorage.getItem("todosLists")))
+    const todoLists = data.map(list => {
+        return new TodoList(list.name, list.active, list.id)
+    })
+
+    return todoLists
+}
 
 const filters = {
     all: todo => true,
     completed: todo => todo.done,
-    uncompleted: todo => !todo.done
+    uncompleted: todo => !todo.done,
+    "due today": todo => todo.isDueToday(),
+    "due tomorrow": todo => todo.isDueTomorrow(),
+    "due this week": todo => todo.isDueThisWeek(),
+    overdue: todo => todo.isOverDue()
 }
 
-let currentView = {type:"filter", id:filters["all"]}
+let currentView = { type: "filter", id: filters["all"] }
 
 render()
 
 function render() {
+    const prevScroll = window.scrollY
+
     UIManager.renderTodoLists(Object.keys(filters), todoLists)
-    
-    if(currentView.type === "list"){
+
+    if (currentView.type === "list") {
         UIManager.renderTodoList(getTodosFromList(currentView.id))
     }
 
-    if(currentView.type === "filter"){
+    if (currentView.type === "filter") {
         UIManager.renderTodoList(todos.filter(currentView.id))
     }
+
+    localStorage.setItem("todos", JSON.stringify(todos))
+    localStorage.setItem("todoLists", JSON.stringify(todoLists))
+    window.scrollTo(0, prevScroll)
 }
 
-function changeToListView(id){
+function changeToListView(id) {
     currentView.type = "list"
     currentView.id = id
     render()
 }
 
-function changeToFilterView(filter){
+function changeToFilterView(filter) {
     currentView.type = "filter"
     currentView.id = filters[filter]
     render()
 }
 
-function changeActiveTodoList(id){
+function changeActiveTodoList(id) {
     const newActiveList = todoLists.find(list => list.id === id)
-    if(newActiveList.active === true) return;
-    
+    if (newActiveList.active === true) return;
+
     todoLists.forEach(list => list.setActiveStatus(false))
     todoLists.find(list => list.id === id).setActiveStatus(true)
 }
@@ -87,36 +115,42 @@ function getTodoLists() {
     return todoLists
 }
 
-function getTodoData(id){
+function getTodoData(id) {
     const wantedTodo = todos.find(todo => todo.id === id)
-    
+
     const name = wantedTodo.name
     const description = wantedTodo.description
     const dueDate = wantedTodo.dueDate
     const priority = wantedTodo.priority
 
-    return {name, description, dueDate, priority}
+    return { name, description, dueDate, priority }
 }
 
-function editTodo(todoId, newData){
+function editTodo(todoId, newData) {
     const todo = todos.find(todo => todo.id === todoId)
-    
-    if(todo.name !== newData.name){
+
+    if (todo.name !== newData.name) {
         todo.name = newData.name
     }
 
-    if(todo.description !== newData.description){
+    if (todo.description !== newData.description) {
         todo.description = newData.description
     }
 
-    if(todo.dueDate !== newData.dueDate){
+    if (todo.dueDate !== newData.dueDate) {
+        console.log(newData)
         todo.dueDate = newData.dueDate
     }
-    
-    if(todo.priority !== newData.priority){
+
+    if (todo.priority !== newData.priority) {
         todo.priority = newData.priority
     }
-    console.log(todo)
+    
+    render()
+}
+
+function expandTodo(id) {
+    todos.find(todo => todo.id === id).toggleExpanded()
     render()
 }
 
@@ -130,7 +164,8 @@ export default {
     changeToListView,
     changeToFilterView,
     changeActiveTodoList,
-    getTodoData
+    getTodoData,
+    expandTodo
 }
 
 
