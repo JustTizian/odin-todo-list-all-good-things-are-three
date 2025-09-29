@@ -232,7 +232,6 @@ function openEditDialog(todoId) {
     editTodoForm.querySelector("#edit-todo-name").value = todoData.name
     editTodoForm.querySelector("#edit-todo-description").value = todoData.description
     editTodoForm.querySelector("#edit-todo-due-date").value = todoData.dueDate
-    console.log(todoData.dueDate)
     editTodoForm.querySelectorAll(".edit-todo-priority").forEach(radio => {
         if (radio.value === todoData.priority) radio.checked = true
     })
